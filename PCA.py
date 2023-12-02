@@ -22,6 +22,7 @@ plt.rcParams['font.size']= 14
 #%% build PCA class
 class PCA:
     """Pincipal component analysis class."""
+    
     def __init__(self, num_samples=1000):
         self.num_samples = num_samples
         
@@ -59,6 +60,22 @@ class PCA:
         eigenvectors_normalized = eigenvectors / norm
         return eigenvectors_normalized
     
+    def plot_pca(self):
+        """Plot principal components."""
+        x = data[:, 0]
+        y = data[:, 1]
+
+        fig, ax = plt.subplots()
+        ax.scatter(x, y, s=5, color='red')
+        ax.quiver(x.mean(), y.mean(), eigenvectors[0, 0] * np.sqrt(eigenvalues[0]), eigenvectors[1, 0] * np.sqrt(eigenvalues[0]), scale_units='xy', scale=1)
+        ax.quiver(x.mean(), y.mean(), eigenvectors[0, 1] * np.sqrt(eigenvalues[1]), eigenvectors[1, 1] * np.sqrt(eigenvalues[1]), scale_units='xy', scale=1)
+        ax.set_title('principal component analysis')
+        ax.set_xlabel('x')
+        ax.set_ylabel('y')
+        ax.grid(True)
+        fig.tight_layout()
+        fig.savefig(os.path.join(os.getcwd(), 'figure_1'))
+    
 #%% instantiate PCA class
 pca = PCA()
 
@@ -85,7 +102,6 @@ eigenvectors_normalized = pca.normalize_eigenvectors(eigenvectors_found)
 assert (eigenvectors_normalized == eigenvectors).all()
 
 #%% plot figures
-
 cwd = os.getcwd()                                                               # get current working directory
 fileName = 'images'                                                             # specify filename
 
@@ -98,16 +114,4 @@ else:
     os.chdir(os.path.join(cwd, fileName))                                       # change cwd to the given path
     cwd = os.getcwd()                                                           # get current working directory
 
-x = data[:, 0]
-y = data[:, 1]
-
-fig, ax = plt.subplots()
-ax.scatter(x, y, s=5, color='red')
-ax.quiver(x.mean(), y.mean(), eigenvectors[0, 0] * np.sqrt(eigenvalues[0]), eigenvectors[1, 0] * np.sqrt(eigenvalues[0]), scale_units='xy', scale=1)
-ax.quiver(x.mean(), y.mean(), eigenvectors[0, 1] * np.sqrt(eigenvalues[1]), eigenvectors[1, 1] * np.sqrt(eigenvalues[1]), scale_units='xy', scale=1)
-ax.set_title('principal component analysis')
-ax.set_xlabel('x')
-ax.set_ylabel('y')
-ax.grid(True)
-fig.tight_layout()
-fig.savefig(os.path.join(os.getcwd(), 'figure_1'))
+pca.plot_pca()
